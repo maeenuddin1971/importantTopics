@@ -1,0 +1,2 @@
+formData.startDate = 
+(formData.startDate) ? this.datePipe.transform(formData.startDate,"yyyy-MM-dd").toString().slice(0, 10) : null;
