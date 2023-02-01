@@ -1,0 +1,5 @@
+PostgreSql DB Backup and Upload:	
+	C:\Program Files\PostgreSQL\14\bin> pg_dump -U postgres -d ExistingdbName >D:\dbName.backup
+
+// to copy from disk to local
+	C:\Program Files\PostgreSQL\14\bin> psql -U postgres -d ExistingdbName <D:\dbName.backup
