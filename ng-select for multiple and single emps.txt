@@ -1,0 +1,123 @@
+// To retrive multiple emps id 
+if (this.myForm.value.empIds) {
+      stringEmpIds = this.myForm.value.empIds.join(',');
+}
+
+
+// dropdown of multiple employees are 
+
+<div class="col-md-4">
+                            <div class="form-group">
+                                <label>Employee </label>
+
+                                <ng-select [items]="configDDL.listData" formControlName="manpowerIds"
+                                    placeholder="Select employee" bindLabel="ddlDescription" bindValue="ddlCode"
+                                    [searchable]="true" [clearable]="true" [virtualScroll]="true"
+                                    [clearOnBackspace]="true" (search)="searchDDL($event)"
+                                    (scrollToEnd)="scrollToEndDDL()" (clear)="clearDDL()" [multiple]="true"
+                                    (click)="initSysParamsDDL($event, 'ddlDescription', '/api/common/getEmp', 'hrCrEmp')"
+                                    ddlActiveFieldName="ddlDescription" class="custom-ng-select">
+                                </ng-select>
+                            </div>
+                        </div>
+
+// then in the ts class
+
+configDDL: any;
+configPgn: any;
+
+searchDDL(event: any) {
+    let q = event.term;
+    console.log("search :: " + q)
+    this.configDDL.q = q;
+    this.configDDL.pageNum = 1;
+    this.configDDL.append = false;
+    this.getListDataDDL();
+  }
+
+scrollToEndDDL() {
+    this.configDDL.pageNum++;
+    this.configDDL.append = true;
+    this.getListDataDDL();
+  }
+
+ _customInitLoadData() {
+    this.configDDL.activeFieldName = "ddlDescription";
+    this.configDDL.dataGetApiPath = "/api/common/getEmp";
+    this.configDDL.apiQueryFieldName = "hrCrEmp";
+    // this.getListDataDDL();
+  }
+
+ clearDDL() {
+    this.configDDL.q = "";
+  }
+
+  private getListDataDDL() {
+    let apiURL = this.baseUrl + this.configDDL.dataGetApiPath;
+
+    let queryParams: any = {};
+    queryParams.pageNum = this.configDDL.pageNum;
+    queryParams.pageSize = this.configDDL.pageSize;
+    if (this.configDDL.q && this.configDDL.q != null) {
+      queryParams[this.configDDL.apiQueryFieldName] = this.configDDL.q;
+    }
+
+    this.commonService.sendGetRequest(apiURL, queryParams).subscribe(
+      (response: any) => {
+        if (this.configDDL.append) {
+          this.configDDL.listData = this.configDDL.listData.concat(
+            response.objectList
+          );
+          this.configDDL.listData2 = this.configDDL.listData.concat(
+            response.objectList
+          );
+        } else {
+          this.configDDL.listData = response.objectList;
+          this.configDDL.listData2 = response.objectList;
+        }
+        this.configDDL.totalItem = response.totalItems;
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+
+
+setDefaultParamsDDL() {
+    this._initConfigDDL();
+  }
+
+  _initConfigDDL() {
+    this.configDDL = {
+      pageNum: 1,
+      pageSize: 10,
+      totalItem: 50,
+      listData: [],
+      listData2: [],
+
+      append: false,
+      q: "",
+      activeFieldName: "xxxFieldName",
+      dataGetApiPath: "",
+      apiQueryFieldName: "xxxFieldName",
+    };
+  }
+
+  initSysParamsDDL(event, activeFieldNameDDL, dataGetApiPathDDL, apiQueryFieldNameDDL) {
+
+    console.log(event.target);
+
+    if (this.configDDL.activeFieldName && this.configDDL.activeFieldName != activeFieldNameDDL) {
+      this.setDefaultParamsDDL();
+    }
+
+    this.configDDL.activeFieldName = activeFieldNameDDL;
+    this.configDDL.dataGetApiPath = dataGetApiPathDDL;
+    this.configDDL.apiQueryFieldName = apiQueryFieldNameDDL;
+    this.getListDataDDL();
+
+  }
+
+
+// then will update the backend

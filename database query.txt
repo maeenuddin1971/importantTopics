@@ -1,0 +1,2 @@
+*to drop a table in postgres
+DROP TABLE IF EXISTS public.overtime_entry_requisition;
