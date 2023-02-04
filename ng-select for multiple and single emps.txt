@@ -121,3 +121,66 @@ setDefaultParamsDDL() {
 
 
 // then will update the backend
+
+
+
+
+public Map<String, Object> getAllPaginatedEmpData(Map<String, String> clientParams, int pageNum, int pageSize, String sortField, String sortDir) {
+        String user  = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        EntityManager em = efm.createEntityManager();
+        System.out.println(clientParams);
+
+        int offset = (pageNum-1) * pageSize;
+        String q = clientParams.get("hrCrEmp");
+
+        //String queryString = "SELECT ID AS DDL_CODE, CODE || ' - ' || DISPLAY_NAME AS DDL_DESCRIPTION, CODE AS DDL_EMP_CODE FROM HR_CR_EMP WHERE (1=1)";
+        String queryString="SELECT hr_cr_emp.id AS DDL_CODE,hr_cr_emp.code || ' - ' || hr_cr_emp.display_name AS DDL_DESCRIPTION,hr_cr_emp.code AS DDL_EMP_CODE\n" +
+                "FROM hr_cr_emp\n" +
+                "LEFT JOIN hr_cr_emp_primary_assgnmnt\n" +
+                "ON hr_cr_emp.id=hr_cr_emp_primary_assgnmnt.hr_cr_emp_id\n" +
+                "where emp_status='ACTIVE'";
+        if(q != null) queryString += " AND ((CODE LIKE '%"+q+"%') OR (DISPLAY_NAME LIKE '%"+q+"%'))" ;
+        log.info(queryString);
+
+        Query query = em.createNativeQuery(queryString, Tuple.class);
+        List<Tuple> listData = query.setFirstResult(offset).setMaxResults(pageSize).getResultList();
+        em.close();
+
+
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        listData.forEach( record-> {
+            Long ddlCode = Long.parseLong( record.get("DDL_CODE").toString() );
+            String ddlDescription = (record.get("DDL_DESCRIPTION") != null) ? record.get("DDL_DESCRIPTION").toString() : "";
+            String ddlEmpCode = (record.get("DDL_EMP_CODE") != null) ? record.get("DDL_EMP_CODE").toString() : "";
+            Map<String, Object> empBean = new HashMap<>();
+            if(user.contentEquals(ddlEmpCode)){
+                empBean.put("ddlCode", "" );
+                empBean.put("ddlDescription", "");
+                empBean.put("ddlEmpCode", "" );
+
+
+            }
+            if(!user.contentEquals(ddlEmpCode)){
+                empBean.put("ddlCode", ddlCode );
+                empBean.put("ddlDescription", ddlDescription);
+                empBean.put("ddlEmpCode", ddlEmpCode );
+
+           }
+
+            dataList.add(empBean);
+
+        });
+
+        Integer total = this.countEmpData(clientParams);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("objectList", dataList);
+        response.put("currentPage", pageNum);
+        response.put("totalPages", this.getTotalPages( total, pageSize) );
+        response.put("totalItems", total);
+        return response;
+
+    }
+
+

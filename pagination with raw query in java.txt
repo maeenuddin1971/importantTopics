@@ -1,0 +1,40 @@
+    public Map<String, Object> getAllPaginatedAlkpData(Map<String, String> clientParams, int pageNum, int pageSize, String sortField, String sortDir) {
+        System.out.println(clientParams);
+
+        int offset = (pageNum-1) * pageSize;
+        String q = clientParams.get("keyword");
+
+        String sqlString = "" +
+                "SELECT\n" +
+                "    ID,\n" +
+                "    CODE,\n" +
+                "    TITLE\n" +
+                "    FROM ALKP\n" +
+                "WHERE\n" +
+                "PARENT_ID = (SELECT ID FROM ALKP WHERE KEYWORD ='"+q+"') \n" +
+                "ORDER BY\n" +
+                "    ID\n" +
+                "OFFSET "+ offset +" ROWS FETCH NEXT "+ pageSize +" ROWS ONLY";
+
+        log.info(sqlString);
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sqlString);
+
+        // process
+        List<Map<String, Object>> alkpDataList = new ArrayList<>();
+        for (Map<String, Object> row : rows) {
+            Map<String, Object> mapBean = new HashMap<>();
+            mapBean.put("id", row.get("ID"));
+            mapBean.put("title", row.get("TITLE"));
+            mapBean.put("code", row.get("CODE"));
+            alkpDataList.add(mapBean);
+        }
+        Integer total = this.countData("ALKP",clientParams);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("objectList", alkpDataList);
+        response.put("currentPage", pageNum);
+        response.put("totalPages", this.getTotalPages( total, pageSize) );
+        response.put("totalItems", total);
+        return response;
+
+    }
