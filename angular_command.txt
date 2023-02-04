@@ -1,0 +1,2 @@
+to generate new component
+ng generate component overtime-daily-requisition
