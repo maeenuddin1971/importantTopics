@@ -1,0 +1,14 @@
+public myForm: FormGroup
+
+constructor(private formBuilder: FormBuilder){
+}
+
+then
+
+ this.myForm = this.formBuilder.group({
+      code: [""],
+      processName: [""],
+      sequence: [""],
+      remarks: [""],
+    });
+
