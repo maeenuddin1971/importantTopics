@@ -1,0 +1,5 @@
+"select ht from  HrTlAttnDaily ht where ht.hrCrEmpId.id = ?1 and " +
+            " ht.entryDate = ?2 and (ht.entryTimeOnly > ?3 and ht.entryTimeOnly <?4 ) and " +
+            " ht.isAck = ?5 and " +
+            " ht.id = (select max(ht2.id) from HrTlAttnDaily ht2 where ht.cardNumber = ht2.cardNumber)" +
+            " order by ht.entryTimeOnly asc "
