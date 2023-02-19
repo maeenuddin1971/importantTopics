@@ -1,0 +1,1 @@
+this.myFormData.startTime =this.datePipe.transform(response.onDateStartTime,"HH:mm").toString();
