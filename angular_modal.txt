@@ -1,0 +1,7 @@
+at first when import everywthin
+
+declare const $: any;
+
+then we can use 
+
+$("#delete_entity").modal("hide");

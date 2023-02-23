@@ -1,1 +1,16 @@
-this.myFormData.startTime =this.datePipe.transform(response.onDateStartTime,"HH:mm").toString();
+setFormValue(auditFormData) {
+    const date = this.convertTimeFromJsonToAnuglar(this.auditFormData.incidentTime);
+    this.auditFormData.incidentDate = this.datePipe.transform(this.auditFormData.incidentDate, "yyyy-MM-dd").toString().slice(0, 10);
+    this.auditFormData.incidentTime = this.datePipe.transform(date, "HH:mm").toString();
+    this.form.controls['hrCrEmp'].setValue(this.auditFormData?.hrCrEmpId?.displayName + "-" + this.auditFormData?.hrCrEmpId?.code);
+    this.form.patchValue(this.auditFormData);
+  }
+
+  convertTimeFromJsonToAnuglar(time) {
+    const dateString = time;
+    const date = new Date();
+    date.setHours(parseInt(dateString.substring(0, 2)));
+    date.setMinutes(parseInt(dateString.substring(3, 5)));
+
+    return date;
+  }
