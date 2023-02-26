@@ -1,0 +1,6 @@
+    public static LocalDate convertStringToDate(String dateString) throws ParseException {
+        Date date1 = (Date) new SimpleDateFormat("MM/dd/yyyy").parse(dateString);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        LocalDate ourformat = LocalDate.parse(formatter.format(date1.getTime()));
+        return ourformat;
+    }
