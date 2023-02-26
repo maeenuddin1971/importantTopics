@@ -1,0 +1,4 @@
+String[] empIds = auditInvestigationProc.getChargerdEmployeesId().split(",");
+List<String> collect = Arrays.stream(empIds).filter(p -> !p.equals(hrCrEmpId)).collect(Collectors.toList());
+String empIds2 = String.join(",", collect);
+auditInvestigationProc.setChargerdEmployeesId(empIds2);
