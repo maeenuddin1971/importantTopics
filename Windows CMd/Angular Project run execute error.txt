@@ -1,0 +1,6 @@
+in windows powershell ... run as adminstrator
+
+Get-ExecutionPolicy
+
+// then
+Set-ExecutionPolicy Unrestricted
