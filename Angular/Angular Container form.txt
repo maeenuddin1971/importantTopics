@@ -1,0 +1,24 @@
+<div id="formContainerId" class="card tab-box">
+        <div class="row user-tabs">
+            <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
+                <ul class="nav nav-tabs nav-tabs-bottom">
+                    <li class="nav-item">
+                        <a href="#emp_profile" data-toggle="tab" class="nav-link">Personal Information</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#emp_assignment" data-toggle="tab" class="nav-link">Education & Training</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#bank_statutory" data-toggle="tab" class="nav-link">Privious Job Experience</a>
+                    </li>
+                    <li>
+                        <a href="#emp_gearupdown" (click)="_getGearUpDownData()" data-toggle="tab"
+                            class="nav-link">Address</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#emp_education" data-toggle="tab" class="nav-link">Others</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
