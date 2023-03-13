@@ -1,0 +1,12 @@
+    public ApplicantDTO2 createByDto(ApplicantDTO2 applicantDTO2) {
+        System.out.println("maeen 2");
+        Applicant applicant = new Applicant();
+        BeanUtils.copyProperties(applicantDTO2, applicant);
+        applicant = this.repository.saveAndFlush(applicant);
+
+        HrIrAplcExt hrIrAplcExt = new HrIrAplcExt();
+        BeanUtils.copyProperties(applicantDTO2, hrIrAplcExt);
+        hrIrAplcExt.setApplicant(applicant);
+        hrIrAplcExt = this.hrIrAplcExtRepo.saveAndFlush(hrIrAplcExt);
+        return null;
+    }

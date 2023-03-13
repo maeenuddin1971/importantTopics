@@ -1,0 +1,6 @@
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class RequestObject<T> {
+    public List<T> Rows;
+}
