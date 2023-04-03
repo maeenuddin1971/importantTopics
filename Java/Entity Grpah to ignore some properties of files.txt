@@ -1,5 +1,7 @@
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
-    @EntityGraph(attributePaths = {"books","type"})
+    @EntityGraph(attributePaths = {"books","type"}, type = EntityGraph.EntityGraphType.FETCH)
     List<Author> findAll();
 }
+
+// THIS WILL WORK AS LIKE FETCH LAZY
