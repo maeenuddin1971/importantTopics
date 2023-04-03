@@ -1,0 +1,5 @@
+@Repository
+public interface AuthorRepository extends JpaRepository<Author, Long> {
+    @EntityGraph(attributePaths = {"books","type"})
+    List<Author> findAll();
+}
