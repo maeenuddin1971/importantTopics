@@ -1,0 +1,13 @@
+@Query(value = "select vcn.id as id, vcn.code as code," +
+            " vcn.title as title, posn.title as positionTitle, vcn.salMax as salMax," +
+            " vcn.salMin as salMin, vcn.noExperience as noExperience," +
+            " vcn.creationDateTime as creationDateTime," +
+            " vcn.requiredWithin as requiredWithin, vcn.approvalStatus as approvalStatus, vcn.vcncyTot as  vcncyTot" +
+            " from Vacancy vcn " +
+            " left join HrCrPosn posn on posn.id = vcn.hrCrPosnId.id" +
+            " left join AllOrgMst dept on dept.id = vcn.allOrgMstDeptId.id" +
+            " where (dept.id = :allOrgMstDeptId or :allOrgMstDeptId is null) and " +
+            " (CAST(:startDate AS date) IS NULL or vcn.requiredWithin >= :startDate ) and " +
+            " ( CAST(:endDate AS date) IS NULL or vcn.requiredWithin <= :endDate)  " +
+            " order by vcn.createDate desc")
+    Page<Map<String, Object>> findListOfVacancyWithJpql(@Param("allOrgMstDeptId")Long allOrgMstDeptId, @Param("startDate") LocalDate fromDate,@Param("endDate") LocalDate toDate, Pageable pageable);
