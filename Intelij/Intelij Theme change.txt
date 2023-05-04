@@ -1,1 +1,2 @@
-ctrl+alt+shift+l then type "change theme"
+ctrl+alt+shift+l then type "change theme";
+In the Settings dialog (Ctrl+Alt+S), select Appearance & Behavior | Appearance.
