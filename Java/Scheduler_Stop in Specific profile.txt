@@ -1,0 +1,7 @@
+@Profile("!localDev")
+@Configuration
+@EnableScheduling
+@Slf4j
+public class DailyGateScheduler {
+
+}
