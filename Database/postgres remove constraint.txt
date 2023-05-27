@@ -1,0 +1,1 @@
+ALTER TABLE public.hr_cr_posn DISABLE TRIGGER ALL
