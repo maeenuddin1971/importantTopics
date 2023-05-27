@@ -1,0 +1,32 @@
+package com.hrms.modules.payroll.payrollEnum;
+
+public enum PayrollDisburseType {
+
+    BANK("bank"),
+    CASH("cash");
+
+
+    private final String payrollDisburseType;
+
+    PayrollDisburseType(String noticeAccessLevel) {
+        this.payrollDisburseType = noticeAccessLevel;
+    }
+
+    public String getDisplayName() {
+        return payrollDisburseType;
+    }
+
+    @Override
+    public String toString() {
+        return payrollDisburseType;
+    }
+
+}
+
+
+in entity class 
+
+
+    @Column(name = "payroll_disburse_type")
+    @Enumerated(EnumType.STRING)
+    PayrollDisburseType payrollDisburseType;
