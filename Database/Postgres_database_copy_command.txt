@@ -1,5 +1,5 @@
 PostgreSql DB Backup and Upload:	
-	C:\Program Files\PostgreSQL\14\bin> pg_dump -U postgres -d ExistingdbName >D:\dbName.backup
+	psql -U postgres -d hrms_updated_db < D:\hrms.backup [ copy from local to db ]
 
 // to copy from disk to local
 	C:\Program Files\PostgreSQL\14\bin> psql -U postgres -d ExistingdbName <D:\dbName.backup
