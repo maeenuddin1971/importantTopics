@@ -1,0 +1,2 @@
+
+<c:if test="${pr.lockBudget eq false && (!empty templateFields ? (tf:prVisibility(templateFields, 'AVAILABLE_BUDGET')) : true)}">
