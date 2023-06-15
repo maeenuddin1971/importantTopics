@@ -1,0 +1,14 @@
+function changeDecimal(val) {
+	if( val != null ) {
+		var availableBudget = document.getElementById('availableBudget');
+		var value = parseFloat(availableBudget.value.replace(/[^\d\.]/g,''));
+		if(value != null) {
+			var roundedUpValue = Math.ceil(value * 10000) / 10000;
+			var formattedValue = roundedUpValue.toFixed(val);
+
+			if(!isNaN(formattedValue)) {
+				availableBudget.value = formattedValue;
+			}
+		}
+	}
+}
