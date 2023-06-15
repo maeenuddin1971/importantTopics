@@ -1,0 +1,2 @@
+Once the block of code is selected, press the shift + Tab key. 
+This will decrease the indent level of the selected lines, moving them to the left.
