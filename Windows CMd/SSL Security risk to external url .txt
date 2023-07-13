@@ -1,0 +1,4 @@
+
+At first see the ssl image then follow this
+
+keytool -import -alias FELSAPECQ -keystore  "C:\opt\jdk-8\jre\lib\security\cacerts" -file FELSAPECQ.cer
