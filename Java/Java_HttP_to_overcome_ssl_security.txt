@@ -1,0 +1,175 @@
+package yong;
+
+import com.privasia.procurehere.core.utils.StringUtils;
+import com.privasia.procurehere.integration.RequestResponseLoggingInterceptor;
+import com.privasia.procurehere.integration.RestTemplateResponseErrorHandler;
+import com.privasia.procurehere.service.impl.ErpIntegrationServiceImpl;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
+import org.apache.http.util.EntityUtils;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.security.crypto.codec.Base64;
+import org.springframework.web.client.RestTemplate;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+
+public class SpringHTTPClientTests {
+    // C:/opt/jdk-8/bin/java yong.SpringHTTPClientTests
+    public static void main(String[] args) {
+        SpringHTTPClientTests t = new SpringHTTPClientTests();
+        try {
+            t.test();
+            //t.test_yong();
+        } catch (Exception e) {
+            println(e.getMessage());
+        }
+    }
+
+    private HttpClientBuilder createSelfSignedHttpBuilder() throws Exception {
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            @Override
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            @Override
+            public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+            }
+        }};
+
+        SSLContext context = SSLContext.getInstance("SSL");
+        context.init(null, trustAllCerts, null);
+
+        HttpClientBuilder builder = HttpClientBuilder.create();
+        SSLConnectionSocketFactory sslFactory = new SSLConnectionSocketFactory(context, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+        builder.setSSLSocketFactory(sslFactory);
+
+        PlainConnectionSocketFactory httpFactory = new PlainConnectionSocketFactory();
+        Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("https", sslFactory)
+                .register("http", httpFactory)
+                .build();
+
+        HttpClientConnectionManager ccm = new BasicHttpClientConnectionManager(registry);
+        builder.setConnectionManager(ccm);
+        return builder;
+    }
+
+    private CloseableHttpClient createSelfSignedHttpClient() throws Exception {
+        return createSelfSignedHttpBuilder().build();
+    }
+
+    public void test() throws Exception {
+        String link = "https://58.26.60.136:1443/sap/bc/z_rfx_purchase?sap-client=240";
+        URL url = new URL(link);
+        HttpHost targetHost = new HttpHost(url.getHost(), url.getPort(), url.getProtocol());
+        BasicCredentialsProvider provider = new BasicCredentialsProvider();
+        AuthScope authScope = new AuthScope(targetHost);
+        provider.setCredentials(authScope, new UsernamePasswordCredentials("EPREMOTE", "Bosm@987"));
+
+
+
+        String jsonPayload = "test data";
+
+        ErpIntegrationServiceImpl erpIntegrationService = new ErpIntegrationServiceImpl();
+
+        //RfxErpPojoAward rfpErpPojoAward = erpIntegrationService.convertToPrErpPojoAward(RfxTypes.RFT, event);
+
+        HttpPost post = new HttpPost(link);
+
+        post.setEntity(new StringEntity(jsonPayload, ContentType.APPLICATION_JSON));
+
+
+        try (CloseableHttpClient client = createSelfSignedHttpBuilder().setDefaultCredentialsProvider(provider).build();
+             CloseableHttpResponse res = client.execute(post)) {
+            int statusCode = res.getStatusLine().getStatusCode();
+            String s = EntityUtils.toString(res.getEntity());
+            println(s + " " + statusCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void test_sap_link_error() {
+        HttpHeaders headers = new HttpHeaders();
+        String auth = StringUtils.checkString("EPREMOTE") + ":" + StringUtils.checkString("Bosm@987");
+        byte[] encodedAuth = Base64.encode(auth.getBytes(StandardCharsets.US_ASCII));
+        String authHeader = "Basic " + new String(encodedAuth);
+        headers.set("Authorization", authHeader);
+        HttpEntity<String> request = new HttpEntity<>("", headers);
+        try {
+            RestTemplate restTemplate = createRestTemplate();
+            String responseMsg = restTemplate.postForObject("https://58.26.60.136:1443/sap/bc/z_rfx_purchase?sap-client=240", request, String.class);
+            println(responseMsg);
+        } catch (Exception e) {
+            println(e.getMessage());
+        }
+    }
+
+    public void test_yong() {
+        try (CloseableHttpClient client = createSelfSignedHttpClient()) {
+            HttpGet get = new HttpGet("https://yong.kianon.net");
+            HttpResponse res = client.execute(get);
+            String s = EntityUtils.toString(res.getEntity());
+            println(s);
+        } catch (Exception e) {
+            println(e.getMessage());
+        }
+    }
+
+    public void test_error() {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> request = new HttpEntity<>("", headers);
+        try {
+            RestTemplate restTemplate = createRestTemplate();
+            String responseMsg = restTemplate.postForObject("https://yong.kianon.net", request, String.class);
+            println(responseMsg);
+        } catch (Exception e) {
+            println(e.getMessage());
+        }
+    }
+
+    public RestTemplate createRestTemplate() {
+        ClientHttpRequestFactory factory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
+        RestTemplate restTemplate = new RestTemplate(factory);
+        restTemplate.setInterceptors(Collections.singletonList(new RequestResponseLoggingInterceptor()));
+        restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
+        return restTemplate;
+    }
+
+    private static void println(Object o) {
+        System.out.println(o);
+    }
+
+}
+
