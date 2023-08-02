@@ -1,0 +1,17 @@
+-----git merge master into PH-3248 
+
+git checkout PH-3248
+
+git pull origin PH-3248
+
+git merge master
+
+
+git add .
+git commit -m "Merged master into PH-3248"
+
+
+git push origin PH-3248
+
+
+
