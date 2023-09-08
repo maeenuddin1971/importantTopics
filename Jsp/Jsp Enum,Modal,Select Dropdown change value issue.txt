@@ -1,0 +1,2 @@
+$(this).find('form').trigger('reset');
+$(this).find('.custom-select').trigger('change');
