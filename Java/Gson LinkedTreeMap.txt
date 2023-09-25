@@ -1,0 +1,17 @@
+Object getrow = response.getResult().get(0);
+LinkedTreeMap<Object,Object> t = (LinkedTreeMap) getrow;
+
+EDODetailsResponse edoDetailsResponse = new EDODetailsResponse();
+edoDetailsResponse.setEdoNumber(t.get("edoNumber") != null ? t.get("edoNumber").toString() : null);
+edoDetailsResponse.setCreatedDateTime(t.get("createdDateTime") != null ? t.get("createdDateTime").toString() : null);
+edoDetailsResponse.setEdoExpiryDateTime(t.get("edoExpiryDateTime") != null ? t.get("edoExpiryDateTime").toString() : null);
+edoDetailsResponse.setBlNumber(t.get("blNumber") != null ? t.get("blNumber").toString() : null);
+edoDetailsResponse.setSplitBlNumber(t.get("splitBlNumber") != null ? t.get("splitBlNumber").toString() : null);
+edoDetailsResponse.setForwardingAgentCompany(t.get("forwardingAgentCompany") != null ? t.get("forwardingAgentCompany").toString() : null);
+edoDetailsResponse.setForwardingAgentLedgerCode(t.get("forwardingAgentLedgerCode") != null ? t.get("forwardingAgentLedgerCode").toString() : null);
+edoDetailsResponse.setEdoStatus(t.get("edoStatus") != null ? t.get("edoStatus").toString() : null);
+edoDetailsResponse.setContainerStatus(t.get("containerStatus") != null ? t.get("containerStatus").toString() : null);
+edoDetailsResponse.setMtReturnLocation(t.get("mtReturnLocation") != null ? t.get("mtReturnLocation").toString() : null);
+edoDetailsResponse.setMtReturnLocationCode(t.get("mtReturnLocationCode") != null ? t.get("mtReturnLocationCode").toString() : null);
+edoDetailsResponse.setUnStuffingLocation(t.get("unStuffingLocation") != null ? t.get("unStuffingLocation").toString() : null);
+edoDetailsResponse.setUnStuffingLocationCode(t.get("unStuffingLocationCode") != null ? t.get("unStuffingLocationCode").toString() : null);

@@ -1,0 +1,3 @@
+activemq.bat start
+
+This should be executed in the bin directory
