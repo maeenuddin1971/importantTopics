@@ -1,0 +1,7 @@
+At first install GenerateAllSetter
+
+Then :
+
+Click on the class and click alt+enter
+User user = new User();
+then alt+enter on User
