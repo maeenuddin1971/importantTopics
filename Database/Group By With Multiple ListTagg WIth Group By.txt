@@ -1,0 +1,88 @@
+SELECT
+	DISTINCT
+supplier1_.COMPANY_NAME AS "COMPANY NAME",
+	country2_.COUNTRY_CODE AS "COUNTRY CODE",
+	country2_.COUNTRY_NAME AS "COUNTRY NAME",
+	supplier1_.COMPANY_REGISTRATION_NUMBER AS "REGISTRATION NUMBER",
+	favourites0_.FULL_NAME AS "CONTACT FULL NAME",
+	favourites0_.DESIGNATION AS "DESIGNATION",
+	supplier1_.MOBILE_NUMBER AS "MOBILE_NUMBER",
+	supplier1_.COMPANY_CONTACT_NUMBER AS "CONTACT NUMBER",
+	supplier1_.LOGIN_EMAIL AS "LOGIN_EMAIL",
+	supplier1_.FAX_NUMBER AS "FAX NUMBER",
+	--industryca4_.CATEGORY_CODE||'-'||industryca4_.CATEGORY_NAME as "INDUSTRY CATEGORY",  --TO BE SEPARATE BY COMMA
+	LISTAGG(DISTINCT industryca4_.CATEGORY_CODE || '-' || industryca4_.CATEGORY_NAME, ', ') WITHIN GROUP (
+	ORDER BY industryca4_.CATEGORY_CODE) AS "INDUSTRY CATEGORIES",
+	--b.PRODUCT_CODE||'-'||b.PRODUCT_NAME AS "PRODUCT CATEGORY",      --TO BE SEPARATE BY COMMA
+	LISTAGG(DISTINCT b.PRODUCT_CODE || '-' || b.PRODUCT_NAME, ', ') WITHIN GROUP (
+	ORDER BY b.PRODUCT_CODE) AS "PRODUCT CATEGORIES",
+	favourites0_.FAV_VENDOR_CODE AS "SUPPLIER CODE",
+	favourites0_.SUPPLIER_STATUS AS "STATUS",
+	favourites0_.RATINGS AS "RATINGS",
+	favourites0_.COMMUNICATION_EMAIL AS "COMMUNICATION_EMAIL",
+	supplier1_.YEAR_OF_ESTABLISHED AS "YEAR OF_ESTABLISH",
+	supplier1_.REGISTRATION_DATE AS "REGISTRATION_DATE",
+	LISTAGG(DISTINCT d.SUPPLIER_TAGS, ', ') AS "SUPPLIER TAGS",
+	--TO BE SEPARATE BY COMMA      
+	LISTAGG(DISTINCT supplier1_.ADRESS_LINE1 || ' ' || supplier1_.ADRESS_LINE2 || ' ' || supplier1_.CITY || ' ' || e.STATE_NAME, ', ') WITHIN GROUP (
+	ORDER BY supplier1_.ADRESS_LINE1) AS "ADDRESS"
+FROM
+	proc_test_db.PROC_FAVOURITE_SUPPLIER favourites0_
+INNER JOIN
+        proc_test_db.PROC_SUPPLIER supplier1_ 
+            ON
+	favourites0_.SUPPLIER_ID = supplier1_.SUPPLIER_ID
+LEFT OUTER JOIN
+        proc_test_db.PROC_COUNTRIES country2_ 
+            ON
+	supplier1_.REGISTRATION_COUNTRY = country2_.ID
+LEFT OUTER JOIN
+        proc_test_db.PROC_FAV_SUPP_IND_CAT industryca3_ 
+            ON
+	favourites0_.FAV_SUPPLIER_ID = industryca3_.FAV_SUPP_ID
+LEFT OUTER JOIN
+        proc_test_db.PROC_INDUSTRY_CATEGORY industryca4_ 
+            ON
+	industryca3_.IND_CAT_ID = industryca4_.ID
+LEFT OUTER JOIN
+        proc_test_db.PROC_FAV_SUPP_PRD_CAT a  
+            ON
+	favourites0_.FAV_SUPPLIER_ID = a.FAV_SUPP_ID
+LEFT OUTER JOIN
+        proc_test_db.PROC_PRODUCT_CATEGORY b 
+            ON
+	a.PRODUCT_CAT_ID = b.ID
+LEFT OUTER JOIN  
+        proc_test_db.PROC_FAV_SUPPLIER_TAGS c
+            ON
+	favourites0_.FAV_SUPPLIER_ID = c.FAV_SUPP_ID
+LEFT OUTER JOIN 
+        proc_test_db.PROC_SUPPLIER_TAGS d
+            ON
+	c.SUPP_TAG_ID = d.ID
+LEFT OUTER JOIN
+        proc_test_db.PROC_STATE e
+            ON
+	supplier1_.STATE_ID = e.ID
+WHERE
+	favourites0_.BUYER_ID = '2c9fa58b5ca1b4dc015caed5cb1a1bb0'
+	AND (
+            favourites0_.SUPPLIER_STATUS = 'ACTIVE'
+        )
+GROUP BY
+	supplier1_.COMPANY_NAME,
+	country2_.COUNTRY_CODE,
+	country2_.COUNTRY_NAME,
+	supplier1_.COMPANY_REGISTRATION_NUMBER,
+	favourites0_.FULL_NAME,
+	favourites0_.DESIGNATION,
+	supplier1_.MOBILE_NUMBER,
+	supplier1_.COMPANY_CONTACT_NUMBER,
+	supplier1_.LOGIN_EMAIL,
+	supplier1_.FAX_NUMBER,
+	favourites0_.FAV_VENDOR_CODE,
+	favourites0_.SUPPLIER_STATUS,
+	favourites0_.RATINGS,
+	favourites0_.COMMUNICATION_EMAIL,
+	supplier1_.YEAR_OF_ESTABLISHED,
+	supplier1_.REGISTRATION_DATE;

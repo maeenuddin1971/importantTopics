@@ -1,0 +1,4 @@
+$.uniform.update();
+
+
+add this in the javasctipt function
