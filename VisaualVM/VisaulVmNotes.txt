@@ -1,0 +1,5 @@
+At first :
+download the visual vm 
+then inside bin folder will get the .exe file
+then if you want to run in the debug mode from the intelij please set the image like the
+image in this folder
