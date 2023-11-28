@@ -1,0 +1,45 @@
+SYIQIN.TEST@FELCRA.COM
+Password@2
+
+
+1.mvn clean package -Dmaven.test.skip=true -P uat
+
+
+2.scp -i "D:/Privasia/deployment/epprod.privasia.com.pem" -rp "D:/privasiaProject/All Project of privasia/procureHere/procurehere.webapp/target/ROOT.war" ec2-user@172.31.37.11:/opt/TEMP
+
+Go to cd /opt/tomcat-test2/bin then
+
+3. ps -ef | grep java
+
+pwd to check in which folder you are in 
+
+to shut down
+4. ./shutdown.sh
+
+5. kill process_id
+
+// then go to webapp folder of 
+/opt/tomcat-test2/webapps
+
+to delete from webapp [dangerous]
+rm -rf * [ can type folder name]
+
+
+then go back .. and go to this folder /webapp
+cp /opt/TEMP/ROOT.war .
+
+then back to the bin folder and 
+./startup.sh
+
+
+go to log folder
+
+current log file
+
+tail -100f catalina.out
+
+to check the log
+tail -100f procurehere.log
+
+
+

@@ -1,0 +1,1 @@
+@transactional(propagation = propagation.requires_new)

@@ -1,0 +1,1 @@
+cp -r /opt/tomcat-demo1/bin/* .

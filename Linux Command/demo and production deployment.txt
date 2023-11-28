@@ -1,0 +1,50 @@
+1. need to stop tomcat first  at bin folder
+
+bin>> pwd  --- we can see which folder currently using
+
+- cd bin/ 
+bin>> ps -ef | grep java
+
+bin>> ./shutdown.sh 
+if this cmd does not work find port num and kill it m
+
+bin>> kill (portNum) 
+
+2. need to backup first 
+go to webapps/ 
+
+---demo----for backup 
+scp -rp ROOT.war /opt/finanshere/
+scp -rp ROOT.war /opt/tomcat-demo1/
+
+---prod----for backup finanshere   
+scp -rp ROOT.war /apps/tomcat/
+ 
+---prod----for backup procure
+scp -rp ROOT.war /opt/tomcat-prod1/ 
+scp -rp ROOT.war /opt/tomcat-prod2/
+
+3. after backup remove all under webapps 
+
+ rm -rf * 
+ 
+4. clean work folder also 
+ go to work 
+ 
+ rm -rf *
+
+5. copy war file under TEMP to webapps 
+
+cp /opt/TEMP/ROOT.war .
+
+6. start up the tomcat under bin 
+./startup.sh 
+
+7. go to log and check status 
+
+cd .. 
+cd logs 
+tail -100f catalina.out
+
+
+----------------Done-------------------------
