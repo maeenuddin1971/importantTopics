@@ -1,0 +1,10 @@
+this are the steps
+1. At first we check the disk size 
+   - can use one of these cmd, * means to check all files(df -kh) or df -kh * or du -hs or du -hs *
+2. Then we use (ls -lh) to check which folder consume more memory .
+3. Then we delete old log file and unncessary file which is old. using rm -rf fileName command
+   - basically, we can remove all log with extension .swp, .gz, .hprof and hs_err_xxxx.log / old logs
+4. set 0 to catalina.out 
+   - cd /opt/tomcat-prod1/logs
+   - ls -lh catalina.out
+   - > catalina.out
