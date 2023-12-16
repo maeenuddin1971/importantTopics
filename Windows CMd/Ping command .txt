@@ -1,0 +1,2 @@
+ping {ip}
+it's a basic command to ping an ip to check it's availablity

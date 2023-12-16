@@ -1,0 +1,4 @@
+To use sdk of a project ,
+1.At first include the child project inside your project (parent project)
+2. Then in the gradle :
+   implementation project(':stream-java-3.8.1')
