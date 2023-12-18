@@ -1,0 +1,17 @@
+Client client = Client.builder(
+                "z4r7rtva5x5b",
+                "cspkvnt6v5rzeh63x4wthw42qzn579ffgyb73u2dyzmjjrfc842nkm6hf3rkjzm7"
+        ).build();
+
+        //String token = User.createToken("john", null, null);
+
+        FlatFeed chris = client.flatFeed("notification", "scott");
+
+        //System.out.println(chris.getR);
+
+        chris.addActivity(Activity.builder()
+                .actor("mry")
+                .verb("follow")
+                .object("test")
+                .time(new Date())
+                .build());
