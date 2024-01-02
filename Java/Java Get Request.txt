@@ -1,0 +1,111 @@
+        RestTemplate restTemplate = new RestTemplate();
+        String authTokenUrl = "http://localhost:8040/rest/auth/token/json";
+
+        ResponseEntity<AuthTokenResponse> responseEntity = restTemplate.getForEntity(authTokenUrl, AuthTokenResponse.class);
+        AuthTokenResponse authTokenResponse = responseEntity.getBody();
+
+This is with the RestTemplate
+
+
+
+/// This is with header and other data
+
+ public Object statusEnquiry(String token, String URL) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("User-Agent", "curl/7.88.1");
+        headers.add("Authorization", "Bearer " + token);
+        headers.add("X-Gps-Coordinates", "40.689263, 74.044505");
+        headers.add("X-Ip-Address", "8.8.8.8");
+        headers.add("X-Signature", signature);
+        headers.add("X-Signature-Key", hexString("19e893e9afe3a27a".getBytes()));
+
+        try {
+            // Use UriComponentsBuilder to build the URL with query parameters
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL);
+            builder.queryParam("clientId", clientId)
+                    .queryParam("messageId", messageId)
+                    .queryParam("transactionId", transactionId)
+                    .queryParam("endToEndId", messageId);
+
+            URL = builder.toUriString();
+
+            // Create the request entity
+            HttpEntity<String> req = new HttpEntity<>(headers);
+
+            // Make the HTTP GET request
+            ResponseEntity<String> res = createRest().exchange(URL, HttpMethod.GET, req, String.class);
+            // Parse the response body
+            ObjectMapper objectMapper = new ObjectMapper();
+            Object parsedJson = objectMapper.readValue(res.getBody(), Object.class);
+            return parsedJson;
+        } catch (Exception e) {
+            println("ERROR3 " + e.getMessage());
+        }
+        return null;
+    }
+
+    private static void println(Object o) {
+        System.out.println(o);
+    }
+
+    public static String hexString(byte[] bytes) {
+        BigInteger big = new BigInteger(1, bytes);
+        return String.format("%0" + (bytes.length << 1) + "x", big);
+    }
+
+
+    private void createSignature() {
+        String priKey = "src/main/resources/my/paynet/bless.gov.my.pri.key";
+        String pubKey = "src/main/resources/my/paynet/bless.gov.my.pub.crt";
+        try {
+            PrivateKey pri = PKCS_PriKey.createPrivateKey(priKey);
+            PublicKey pub = X509_PubKey.createPublicKey(pubKey);
+            Signature sign = Signature.getInstance("SHA256withRSA");
+            sign.initSign(pri);
+            sign.update(txt.getBytes());
+            signature = new String(Base64.getEncoder().encode(sign.sign()));
+        } catch (Exception e) {
+            println(e.getMessage());
+        }
+    }
+
+    private RestTemplate createRest() {
+        RestTemplate rest = new RestTemplate(clientHttpRequestFactory());
+        //rest.setInterceptors(Collections.singletonList(new RequestResponseLoggingInterceptor()));
+        return rest;
+    }
+
+    private ClientHttpRequestFactory clientHttpRequestFactory() {
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+        factory.setConnectionRequestTimeout(300_000);
+        factory.setConnectTimeout(300_000);
+        return factory;
+    }
+
+    private final String clientId = "M0000221";
+    private final String BANK__IC = "M0000221";
+    private final String messageId;
+    private final String transactionId;
+    private final String txt;
+    private String body;
+    private String signature;
+
+    public StatusInquiry() {
+        SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyyMMdd");
+        String YYYYMMDD = yyyyMMdd.format(new Date());
+        String originator = "O";   // O=OFI H=RPP R=RFI
+        String channelCode = "BW"; // BA (Mobile) BW (WebBrowser)
+        String SSSSSSSS = "36240300";
+        messageId = YYYYMMDD + BANK__IC + "861" + originator + channelCode + SSSSSSSS; // YYYYMMDDBBBBBBBBXXXOCCSSSSSSSS
+        //messageId = "20231227M0000221861OBW36240300";
+        transactionId = YYYYMMDD + BANK__IC + "861" + SSSSSSSS;
+        //transactionId = "20231227M000022186136240300";
+        txt = clientId + BANK__IC + messageId + transactionId + messageId + clientId;
+        body = "";
+        body += "clientId=" + clientId + "&";
+        body += "messageId=" + messageId + "&";
+        body += "transactionId=" + transactionId;
+        createSignature();
+    }
