@@ -1,0 +1,27 @@
+<html>
+<script src="https://cdn.jsdelivr.net/npm/getstream/dist/js_min/getstream.js"></script>
+<script type="text/javascript">
+    const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiYzI5dWRURTJNREJBWjIxaGFXd3VZMjl0IiwiZXhwIjoxNzA0MjEwMTY2fQ.yFii4551FXibVrvB1ltxpsOw9bcg3owfTUDbHxZD1FA';
+    const client = stream.connect('z4r7rtva5x5b', null, '1275418');
+
+    console.log(client)
+
+    const notificationScott = client.feed('notification', 'c29udTE2MDBAZ21haWwuY29t', token);
+
+    function callback(data) {
+        console.log(data);
+        alert('A new activity: ' + JSON.stringify(data));
+    }
+
+    function successCallback() {
+        alert('Now listening to changes in realtime. Add an activity to see how realtime works.');
+    }
+
+    function failCallback(data) {
+        alert('Something went wrong, check the console logs');
+        console.log(data);
+    }
+
+    notificationScott.subscribe(callback).then(successCallback, failCallback);
+</script>
+</html>

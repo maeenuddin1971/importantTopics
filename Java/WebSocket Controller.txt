@@ -1,0 +1,25 @@
+package AuditTrail.AuditTrail.getstream;
+
+import AuditTrail.AuditTrail.log.entity.Notification;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Controller;
+
+@Configuration
+@EnableScheduling
+public class WebSocketController {
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    //@Scheduled(fixedRate = 5000) // Send notification every 5 seconds for demonstration
+    public void sendNotification() {
+        Notification notification = new Notification();
+        notification.setMessage("message is by me");
+        //System.out.println("maisha 1");
+        messagingTemplate.convertAndSend("/topic", notification);
+    }
+}

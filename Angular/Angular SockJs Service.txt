@@ -1,0 +1,61 @@
+
+import providers: [WebSocketService] in app.module.ts
+
+// webSocket.service.ts
+
+import { Injectable } from '@angular/core';
+import * as SockJs from "sockjs-client"
+import * as Stomp from "stompjs"
+
+
+@Injectable({
+  providedIn: 'root',
+})
+export class WebSocketService {
+
+
+  constructor() {
+    this.initializeWebSocket();
+  }
+
+
+  socket = new SockJs('http://localhost:8040/auditTest/maeen')
+
+  stompClient = Stomp.over(this.socket);
+
+  subscribe(topic: string, callback: any) {
+    const connected: boolean = this.stompClient.connected;
+
+    if (connected) {
+      this.subscribeToTopic(topic, callback);
+      return;
+    }
+
+    this.stompClient.subscribe(topic, (): any => {
+      console.log("this is maisha moni")
+      callback()
+    })
+  }
+
+  private subscribeToTopic(topic: string, callback: any) {
+    this.stompClient.subscribe(topic, (message: any) => {
+      // Handle the incoming message
+      console.log("Received message:", message.body);
+      callback(message.body);
+    });
+  }
+
+  private initializeWebSocket() {
+    this.socket = new SockJs('http://localhost:8040/auditTest/maeen');
+    this.stompClient = Stomp.over(this.socket);
+    this.stompClient.connect({}, () => {
+      // Connection established, you can now subscribe to topics or perform other actions
+      console.log('WebSocket connected');
+
+      this.subscribe('/topic', (): any => { }
+      )
+
+    });
+  }
+
+}

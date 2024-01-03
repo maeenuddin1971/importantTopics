@@ -1,0 +1,55 @@
+in Build.gradle 
+
+implementation 'io.getstream.client:stream-java:3.6.2'
+
+
+
+then a config code 
+
+package com.ks.chat.config;
+
+import io.getstream.chat.java.services.framework.Client;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.net.MalformedURLException;
+
+/**
+ * this class will only configure when getStreamIo is set in yaml chat.service
+ */
+@Configuration
+@ConditionalOnProperty(
+        value = Constant.CHAT_SERVICE_PREFIX,
+        havingValue = Constant.CHAT_SERVICE_NAME
+)
+@SuppressWarnings("unused")
+public class GSIoChatConfig {
+    private static final String GET_STREAM_IO_SECRET_KEYWORD = "STREAM_SECRET";
+    private static final String GET_STREAM_IO_API_KEY_KEYWORD = "STREAM_KEY";
+
+//    @Value("${chat.streamIo.apiKey}")
+//    private String apiKey;
+//
+//    @Value("${chat.getStreamIo.apiSecret}")
+//    private String apiSecret;
+
+    public GSIoChatConfig(
+            @Value("${chat.getStreamIo.apiKey}") String apiKey,
+            @Value("${chat.getStreamIo.apiSecret}") String apiSecret
+    ) {
+        // initialize envs to connect get-stream-io
+        System.setProperty(GET_STREAM_IO_API_KEY_KEYWORD, apiKey);
+        System.setProperty(GET_STREAM_IO_SECRET_KEYWORD, apiSecret);
+    }
+
+
+    @Bean
+    public io.getstream.client.Client getStreamClient() throws MalformedURLException {
+        return io.getstream.client.Client.builder(
+                "z4r7rtva5x5b",
+                "cspkvnt6v5rzeh63x4wthw42qzn579ffgyb73u2dyzmjjrfc842nkm6hf3rkjzm7"
+        ).build();
+    }
+}

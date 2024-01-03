@@ -1,0 +1,151 @@
+package com.ks.chat.service;
+
+import com.google.common.collect.Lists;
+import com.ks.chat.model.NotificationUserInfoDTO;
+import com.tirzok.common.dto.LoggedInUserDetails;
+import io.getstream.chat.java.models.User;
+import io.getstream.client.Client;
+import io.getstream.client.FlatFeed;
+import io.getstream.client.NotificationFeed;
+import io.getstream.core.exceptions.StreamException;
+import io.getstream.core.models.Activity;
+import io.getstream.core.models.FeedID;
+import io.getstream.core.options.Limit;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+@Slf4j
+@Service
+public class NotificationService {
+
+    private final LoggedInUserDetails loggedInUserDetails;
+
+    private final Client client;
+
+    @Autowired
+    public NotificationService(
+            LoggedInUserDetails loggedInUserDetails,
+            Client client
+    ) {
+        this.loggedInUserDetails = loggedInUserDetails;
+        this.client = client;
+    }
+//
+//    public ResponseDto pushNotificationFeeds() throws StreamException {
+//        FlatFeed ericFeed = client.flatFeed("user", "pavel");
+////// Add the activity to the feed
+//        Activity activity = Activity.builder()
+//                .actor("maeenuddin")
+//                .verb("tweet")
+//                .object("1")
+//                .extraField("tweet", "Hello world")
+//                .build();
+//        ericFeed.addActivity(activity).join();
+//
+//        NotificationFeed notifications = client.notificationFeed("notification", "Malaysia19710");
+//
+//        PaginatedNotificationGroup<Activity> activityGroups = notifications.getActivities(new Limit(10))
+//                .join();
+//
+//        System.out.println(activityGroups);
+//
+////        Activity activity = Activity.builder().actor("User:pavel").verb("order").object("order:id")
+////                .to(Lists.newArrayList(new FeedID("notification:Malaysia19710")))
+////                .extraField("message", "pavel completed the task now he is ready ").build();
+////        ericFeed.addActivity(activity);
+//
+//        return null;
+//    }
+//
+//    public void maeen() throws StreamException, ExecutionException, InterruptedException {
+//        FlatFeed chris = client.flatFeed("user", "maeenuddin");
+//        List<Activity> activities = chris.getActivities().get();
+//
+//        System.out.println(activities.size());
+//
+//        Activity targetActivity = activities.stream()
+//                .filter(activity -> activity.getID().equals("0f5358b4-a7b1-11ee-9ceb-0ae2e9609de6"))
+//                .findFirst()
+//                .orElse(null);
+//
+//        System.out.println(targetActivity);
+//    }
+//
+    public Boolean addUser(String userId) throws StreamException, UnsupportedEncodingException {
+
+        String encodedUserId = Base64.getEncoder().encodeToString(userId.getBytes(StandardCharsets.UTF_8));
+//        System.out.println("Encoded data is ");
+//        System.out.println(encodedUserId);
+        FlatFeed userFeed = client.flatFeed("user", encodedUserId);
+//        System.out.println("Encoded data is ");
+//        System.out.println(encodedUserId);
+        List<Activity> activities = userFeed.getActivities(new Limit(1))
+                .join();
+
+        // Add notification feed for the user
+        addFirstNotificationFeed(encodedUserId);
+        if (activities != null && activities.size() == 0) {
+            Activity activity = Activity.builder()
+                    .actor("Admin")
+                    .verb("UserCreated")
+                    .object("User is Created In Getstream")
+                    .extraField("message", "User is Created In Getstream")
+                    .build();
+            userFeed.addActivity(activity);
+            return true;
+        }
+        return false;
+    }
+    private Boolean addFirstNotificationFeed(String userId) throws StreamException {
+        NotificationFeed notifications = client.notificationFeed("notification", userId);
+        notifications.getActivities(new Limit(1))
+                .join();
+        return true;
+    }
+
+    public void pushNotification(NotificationUserInfoDTO notificationUserInfoDTO) throws StreamException {
+        String notifiedByUser =  Base64.getEncoder().encodeToString(notificationUserInfoDTO.getNotificationByUserLoginCode().getBytes(StandardCharsets.UTF_8));
+        FlatFeed userFeed = client.flatFeed("user", notifiedByUser);
+
+        System.out.println("maeen 1");
+
+        String notifiedToUserId = Base64.getEncoder().encodeToString(notificationUserInfoDTO.getNotificationToUserLoginCode().getBytes(StandardCharsets.UTF_8));
+        addFirstNotificationFeed(notifiedToUserId);
+
+        System.out.println("maeen 1");
+        System.out.println(notifiedByUser);
+        System.out.println(notifiedToUserId);
+
+        Activity activity = Activity.builder()
+                .actor(notifiedToUserId)
+                .verb(notificationUserInfoDTO.getNotificationType())
+                .object("1")
+                .to(Lists.newArrayList(new FeedID("notification:" + notifiedToUserId)))
+                .extraField("message", notificationUserInfoDTO.getMessage())
+                .build();
+        userFeed.addActivity(activity);
+    }
+
+    public String generateTokenForNotification(String userId) {
+        Calendar expiration = Calendar.getInstance();
+        expiration.add(Calendar.HOUR_OF_DAY, 1);
+        Date expiresAt = expiration.getTime();
+        String encodedUserId = Base64.getEncoder().encodeToString(userId.getBytes(StandardCharsets.UTF_8));
+        String userToken = client.frontendToken(encodedUserId, expiresAt).toString();
+        return userToken;
+    }
+
+    public String getUserEncodedName(String userId) {
+        String encodedUserId = Base64.getEncoder().encodeToString(userId.getBytes(StandardCharsets.UTF_8));
+        return encodedUserId;
+    }
+}
