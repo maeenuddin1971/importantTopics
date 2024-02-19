@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=D:\privasia\database\wlthint3client-10.3.jar -DgroupId=com.oracle.soa -DartifactId=wlthint3client -Dversion=10.3 -Dpackaging=jar

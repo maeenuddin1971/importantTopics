@@ -97,6 +97,9 @@ public class SpringHTTPClientTests {
         AuthScope authScope = new AuthScope(targetHost);
         provider.setCredentials(authScope, new UsernamePasswordCredentials("EPREMOTE", "Bosm@987"));
 
+        ObjectMapper objectMapper = new ObjectMapper();
+
+	    String jsonPayload = objectMapper.writeValueAsString(rfpErpPojoAward);
 
 
         String jsonPayload = "test data";

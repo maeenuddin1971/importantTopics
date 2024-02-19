@@ -1,0 +1,6 @@
+
+at first set the setenv
+
+then run the mvn clean package
+
+opt/jdk-17/bin/java      gov.bless.paynet.PaynetApplication

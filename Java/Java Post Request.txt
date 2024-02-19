@@ -1,4 +1,7 @@
-        String initiatePaymentUrl = "http://localhost:8040/rest/payment/initiatePayment";
+        
+import org.springframework.http.*;
+
+String initiatePaymentUrl = "http://localhost:8040/rest/payment/initiatePayment";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
