@@ -1,0 +1,14 @@
+SSLContextBuilder builder = new SSLContextBuilder();
+					builder.loadTrustMaterial(null, (chain, authType) -> true);
+
+// Create an SSL connection socket factory with the custom SSL context
+					SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(builder.build(), NoopHostnameVerifier.INSTANCE);
+
+// Create an HttpClient that uses the custom SSL connection socket factory
+					CloseableHttpClient httpClient = HttpClients.custom()
+							.setSSLSocketFactory(sslSocketFactory)
+							.build();
+
+// Create a request factory that uses the custom HttpClient
+					HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+					RestTemplate restTemplatep = new RestTemplate(requestFactory);
