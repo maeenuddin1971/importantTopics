@@ -1,0 +1,3 @@
+Get the exported file and rename to .crt
+At first run get the certificate file from the browser then execute this command as adminstratior 
+keytool -import -trustcacerts -keystore "C:/Program Files/Java/jdk-17/lib/security/cacerts" -storepass changeit -alias fgvholdings_wildcard -file "C:\Users\Maeen Uddin\Downloads\Video\_.fgvholdings.crt"
