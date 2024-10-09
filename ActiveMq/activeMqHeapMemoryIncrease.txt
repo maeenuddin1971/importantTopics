@@ -1,0 +1,4 @@
+sudo nano /opt/activemq/bin/env
+then change save with contrl+O
+then enter then click cntrl+X
+ACTIVEMQ_OPTS_MEMORY="-Xms2G -Xmx4G"

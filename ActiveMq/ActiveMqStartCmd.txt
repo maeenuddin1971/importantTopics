@@ -1,3 +1,6 @@
 activemq.bat start
 
 This should be executed in the bin directory
+
+
+./activeMq start
