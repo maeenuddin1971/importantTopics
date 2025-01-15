@@ -1,0 +1,1 @@
+openssl s_client -connect 54.151.204.101:443 -servername test.procurehere.com -tls1_2
