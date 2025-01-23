@@ -12,3 +12,7 @@ SELECT pg_terminate_backend(pid)
 FROM pg_stat_activity 
 WHERE state = 'active' 
 AND now() - query_start > interval '1 hour'; 
+
+
+// set terminator for all queries for 25 min
+show statement_timeout
