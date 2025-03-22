@@ -1,0 +1,8 @@
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote"
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.port=9010"
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
+export CATALINA_OPTS="$CATALINA_OPTS -Djava.rmi.server.hostname=172.31.47.186"
+
+
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.rmi.port=9010"
